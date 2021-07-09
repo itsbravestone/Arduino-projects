@@ -1,2 +1,2 @@
 # Arduino-projects
-Arduino projects on whicj i've worked
+Arduino projects on which i've worked
