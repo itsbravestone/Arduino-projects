@@ -34,3 +34,28 @@ Adafruit_BMP085 bmp;                    // BMP Pressure Sensor
 Adafruit_SI1145 uv = Adafruit_SI1145(); // UV Sensor
 unsigned int connections = 0;           // number of connections
 unsigned int timeout = 30000;           // Milliseconds -- 1000 = 1 Second
+
+//Setup runs once at power on or reset
+void setup(void){
+  //Turn everything on
+  Serial.begin(38400);
+  Wire.begin();    //For I2C
+  //rtc.begin();     //Hardware rtc
+  bmp.begin();     //Pressure sensor
+  dht.begin();     //Humidity Sensor
+  
+  // Turn the Wifi on
+  Serial.print(F("\nInitializing..."));
+  if ( wifi.init() ) {
+    Serial.println("WiFi is go");
+  } else {
+    Serial.println("Something went wrong during WiFi setup");
+    } 
+  // Connect to WiFi network stored in non-volatile memory
+  Serial.println("Connecting to network stored in profile...");
+  if ( !wifi.fastConnect(timeout) ) {
+    Serial.println("Error: Could not connect to network");
+    }
+
+}//End of Setup
+
