@@ -59,3 +59,50 @@ void setup(void){
 
 }//End of Setup
 
+//Loop runs continuously
+void loop(void){  
+  //Lets see what time the RTC is set at! -- If RTC is used
+  //DateTime now = rtc.now();
+
+  //Get sensor data
+  float tempc = bmp.readTemperature(); //Can read temp from bmp or dht sensors
+  float tempf =  (tempc * 9.0)/ 5.0 + 32.0; //was dht.readTemperature, need to convert native C to F
+  float humidity = dht.readHumidity(); 
+  float baromin = bmp.readPressure()* 0.0002953;// Calc for converting Pa to inHg (wunderground)
+  float dewptf = (dewPoint(tempf, dht.readHumidity())); //Dew point calc(wunderground) //replaced dht.readtemp with converted temp
+  float UVindex = uv.readUV();
+  // the index is multiplied by 100 so to get the integer index, divide by 100!
+        UVindex /= 100.0; 
+                            
+  if (DEBUG) {   
+  // Debug, or you can sit up all night watching it.
+  Serial.println("+++++++++++++++++++++++++");
+  /*
+  //If you are using Real Time Clock (RTC)
+  Serial.println("RTC TIME ");
+  Serial.print("&dateutc=");
+  Serial.print(now.year());
+  Serial.print("-");
+  Serial.print(now.month());
+  Serial.print("-");
+  Serial.print(now.day());
+  Serial.println("+");
+  Serial.print(now.hour());
+  Serial.print(":");
+  Serial.print(now.minute());
+  Serial.print(":");
+  Serial.println(now.second());
+  */
+  Serial.print("temp= ");
+  Serial.print(tempf);
+  Serial.println(" *F");
+  Serial.print("baro= ");
+  Serial.print(baromin);
+  Serial.println(" inHg");
+  Serial.print("dew point= ");
+  Serial.println(dewptf);
+  Serial.print("humidity= ");
+  Serial.println(humidity);
+  Serial.print("UV: ");  
+  Serial.println(UVindex);
+  }//End debug loop
