@@ -167,3 +167,39 @@ void loop(void){
     //lpDelay(1200); // Low Power Delay. Value of 4=1sec, 40=10sec, 1200=5min --If battery, send every 5 min.
 
 }//End loop
+
+/****************************************************************
+
+  Function Fun Time
+
+****************************************************************/
+
+double dewPoint(double tempf, double humidity)
+{
+  double A0= 373.15/(273.15 + tempf);
+  double SUM = -7.90298 * (A0-1);
+  SUM += 5.02808 * log10(A0);
+  SUM += -1.3816e-7 * (pow(10, (11.344*(1-1/A0)))-1) ;
+  SUM += 8.1328e-3 * (pow(10,(-3.49149*(A0-1)))-1) ;
+  SUM += log10(1013.246);
+  double VP = pow(10, SUM-3) * humidity;
+  double T = log(VP/0.61078);   
+  return (241.88 * T) / (17.558-T);
+}
+
+ // Low Power Delay.  Drops the system clock to its lowest setting and sleeps for 256*quarterSeconds milliseconds.
+ // ie: value of 4=1sec    20=5sec          
+int lpDelay(int quarterSeconds) {
+  int oldClkPr = CLKPR;   // save old system clock prescale
+  CLKPR = 0x80;           // Tell the AtMega we want to change the system clock
+  CLKPR = 0x08;           // 1/256 prescaler = 60KHz for a 16MHz crystal
+  delay(quarterSeconds);  // since the clock is slowed way down, delay(n) now acts like delay(n*256)
+  CLKPR = 0x80;           // Tell the AtMega we want to change the system clock
+  CLKPR = oldClkPr;       // Restore old system clock prescale
+}
+
+/****************************************************************
+
+  End of Program
+
+****************************************************************/
