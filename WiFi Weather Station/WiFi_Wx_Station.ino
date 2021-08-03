@@ -106,3 +106,64 @@ void loop(void){
   Serial.print("UV: ");  
   Serial.println(UVindex);
   }//End debug loop
+
+  //Send data to Weather Underground
+ if (client.connect(SERVER, 80)) { 
+    if (DEBUG) {    
+      Serial.println("Sending DATA ");
+      }
+    // Ship it!
+    client.print(WEBPAGE); 
+    client.print("ID=");
+    client.print(ID);
+    client.print("&PASSWORD=");
+    client.print(PASSWORD);
+    client.print("&dateutc=");
+    client.print("now");    //can use instead of RTC if sending in real time
+    /*
+    //If you are using Real Time Clock (RTC)
+    client.print(now.year());
+    client.print("-");
+    client.print(now.month());
+    client.print("-");
+    client.print(now.day());
+    client.print("+");
+    client.print(now.hour()+8);// YOU MUST Add 8 hours -for pacific time- to get back to UTC or Wunderground wont show RAPID FIRE
+    client.print("%3A");
+    client.print(now.minute());
+    client.print("%3A");
+    client.print(now.second());
+    */
+    client.print("&tempf=");
+    client.print(tempf);
+    client.print("&baromin=");
+    client.print(baromin);
+    client.print("&dewptf=");
+    client.print(dewptf);
+    client.print("&humidity=");
+    client.print(humidity);
+    client.print("&uv=");
+    client.print(UVindex);
+    //client.print("&action=updateraw");//Standard update
+    client.print("&softwaretype=Arduino%20UNO%20version1&action=updateraw&realtime=1&rtfreq=2.5");//Rapid Fire
+    client.print(" HTTP/1.0\r\n");
+  	client.print("Accept: text/html\r\n");
+  	client.print("Host: ");
+  	client.print(SERVER);
+  	client.print("\r\n\r\n");
+    client.println();
+    
+    if (DEBUG) {   
+      Serial.println("Upload complete");
+      }
+      
+   }//End send loop 
+    else {
+      if (DEBUG) { Serial.println(F("Connection failed")); }
+      return;
+      }
+    
+    delay(2500); // --If plugged in send every 2.5 seconds  
+    //lpDelay(1200); // Low Power Delay. Value of 4=1sec, 40=10sec, 1200=5min --If battery, send every 5 min.
+
+}//End loop
